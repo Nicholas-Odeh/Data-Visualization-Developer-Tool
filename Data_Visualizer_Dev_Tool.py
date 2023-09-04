@@ -6,20 +6,21 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 
+# Sample data
 data = pd.read_csv('historical_automobile_sales.csv')  # Replace with your dataset file
 
 app = dash.Dash(__name__)
 
-#title of Dashbord
+# TASK 2.1: Create a Dash application and give it a meaningful title
 app.title = "Automobile Sales Statistics Dashboard"
 
-# unique years for the select-year dropdown
+# Get a list of unique years for the select-year dropdown
 years_list = data['Year'].unique()
 
 app.layout = html.Div([
     html.H1("Automobile Sales Statistics Dashboard", style={'textAlign': 'center', 'color': '#503D36', 'fontSize': 24}),
 
-    #drop-down menus
+    # TASK 2.2: Add drop-down menus with appropriate titles and options
     dcc.Dropdown(id='dropdown-statistics',
                  options=[
                      {'label': 'Yearly Statistics', 'value': 'Yearly Statistics'},
@@ -38,7 +39,7 @@ app.layout = html.Div([
 ])
 
 
-#Callbacks to enable/disable the input container and display the line chart
+# TASK 2.4: Create Callbacks to enable/disable the input container and display the line chart
 @app.callback(
     Output(component_id='select-year', component_property='disabled'),
     Input(component_id='dropdown-statistics', component_property='value')
@@ -60,18 +61,18 @@ def update_automobile_sales_chart(selected_report, selected_year):
         else:
             filtered_data = data
 
-        #Plotly Express line chart
+        # Create a line chart using Plotly Express
         fig = px.line(filtered_data, x='Year', y='Automobile_Sales', title='Automobile Sales Over Time')
         return fig
     elif selected_report == 'Recession Period Statistics':
         # Filter data for recession years (Recession = 1)
         recession_data = data[data['Recession'] == 1]
 
-        # Recession period statistics line chart
+        # Create a line chart for recession period statistics
         fig = px.line(recession_data, x='Year', y='Automobile_Sales', title='Automobile Sales During Recessions')
         return fig
     else:
-        return px.line()  # Returns a empty line chart
+        return px.line()  # Return an empty line chart for other report types
 
 
 if __name__ == '__main__':
